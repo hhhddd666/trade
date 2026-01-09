@@ -1,0 +1,83 @@
+<!-- templates/contract_pdf_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>房屋买卖合同</title>
+    <style>        body {
+            font-family: Arial, "Microsoft YaHei", sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .content {
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: left;
+        }
+        .signature {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>房屋买卖合同</h2>
+        <p>合同编号: HT-{{ contract.id }}-{{ contract.created_at|date:"Ymd" }}</p>
+        <p>签订日期: {{ contract.created_at|date:"Y年m月d日" }}</p>
+    </div>
+
+    <div class="content">
+        <h3>房产信息</h3>
+        <table>
+            <tr><th>房产标题</th><td>{{ contract.property_title }}</td></tr>
+            <tr><th>房产地址</th><td>{{ contract.property_address }}</td></tr>
+            <tr><th>房产价格</th><td>¥{{ contract.property_price|floatformat:2 }}</td></tr>
+            <tr><th>房产面积</th><td>{{ contract.property_area }} 平方米</td></tr>
+            <tr><th>房产类型</th><td>{{ contract.property_type }}</td></tr>
+        </table>
+
+        <h3>买方信息</h3>
+        <table>
+            <tr><th>姓名</th><td>{{ contract.buyer_name }}</td></tr>
+            <tr><th>身份证</th><td>{{ contract.buyer_id_card }}</td></tr>
+            <tr><th>电话</th><td>{{ contract.buyer_phone }}</td></tr>
+            <tr><th>地址</th><td>{{ contract.buyer_address }}</td></tr>
+        </table>
+
+        <h3>卖方信息</h3>
+        <table>
+            <tr><th>姓名</th><td>{{ contract.seller_name }}</td></tr>
+            <tr><th>身份证</th><td>{{ contract.seller_id_card }}</td></tr>
+            <tr><th>电话</th><td>{{ contract.seller_phone }}</td></tr>
+            <tr><th>地址</th><td>{{ contract.seller_address }}</td></tr>
+        </table>
+
+        <h3>价格信息</h3>
+        <table>
+            <tr><th>房产价格</th><td>¥{{ contract.property_price|floatformat:2 }}</td></tr>
+            <tr><th>税率</th><td>{{ contract.tax_rate }}%</td></tr>
+            <tr><th>税费</th><td>¥{{ contract.tax_amount|floatformat:2 }}</td></tr>
+            <tr><th>总价</th><td>¥{{ contract.total_price|floatformat:2 }}</td></tr>
+        </table>
+
+        <div class="signature">
+            <p>买方签字: _____________________ 日期: ___________</p>
+            <p>卖方签字: _____________________ 日期: ___________</p>
+            <p>中介签字: _____________________ 日期: ___________</p>
+        </div>
+    </div>
+</body>
+</html>

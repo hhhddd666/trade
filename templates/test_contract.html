@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>测试生成合同PDF</title>
+</head>
+<body>
+    <form method="post" action="{% url 'home:generate_contract_pdf' %}">
+        {% csrf_token %}
+        <div>
+            <label>房源ID：</label>
+            <input type="text" name="city_id" value="1" required>
+        </div>
+        <div>
+            <label>买方姓名：</label>
+            <input type="text" name="buyer_name" value="张三" required>
+        </div>
+        <div>
+            <label>买方身份证：</label>
+            <input type="text" name="buyer_idcard" value="110101199001011234" required>
+        </div>
+        <div>
+            <label>卖方姓名：</label>
+            <input type="text" name="seller_name" value="李四" required>
+        </div>
+        <div>
+            <label>卖方身份证：</label>
+            <input type="text" name="seller_idcard" value="110101199001015678" required>
+        </div>
+        <div>
+            <label>中介ID（可选）：</label>
+            <input type="text" name="agent_id" value="">
+        </div>
+        <button type="submit">生成PDF</button>
+    </form>
+</body>
+</html>

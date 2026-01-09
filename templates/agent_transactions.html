@@ -1,0 +1,62 @@
+<!-- templates/agent_transactions.html -->
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>中介交易记录</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>交易记录</h2>
+
+    {% if transactions %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>房产标题</th>
+                        <th>房产地址</th>
+                        <th>买家</th>
+                        <th>卖家</th>
+                        <th>交易金额</th>
+                        <th>状态</th>
+                        <th>日期</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.property_title }}</td>
+                        <td>{{ transaction.property_address }}</td>
+                        <td>{{ transaction.buyer_name }}</td>
+                        <td>{{ transaction.seller_name }}</td>
+                        <td>¥{{ transaction.amount|floatformat:2 }}</td>
+                        <td>
+                            {% if transaction.status == 'completed' %}
+                                <span class="badge badge-success">已完成</span>
+                            {% elif transaction.status == 'pending' %}
+                                <span class="badge badge-warning">待处理</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ transaction.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ transaction.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            <a href="{% url 'users:generate_contract_pdf' %}"
+                               class="btn btn-sm btn-primary"
+                               target="_blank">查看合同</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>暂无交易记录</p>
+    {% endif %}
+</div>
+</body>
+</html>

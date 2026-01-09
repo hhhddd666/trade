@@ -1,0 +1,326 @@
+<!-- templates/agent_contract.html -->
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>合同生成</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>房屋买卖合同生成</h2>
+
+    <form method="post" id="contractForm">
+        {% csrf_token %}
+
+        <!-- 房产信息 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>房产信息</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="property_title">房产标题</label>
+                        <input type="text" class="form-control" id="property_title" name="property_title" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="property_address">房产地址</label>
+                        <input type="text" class="form-control" id="property_address" name="property_address" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="property_price">房产价格</label>
+                        <input type="number" class="form-control" id="property_price" name="property_price" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="property_area">房产面积</label>
+                        <input type="number" class="form-control" id="property_area" name="property_area" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="property_type">房产类型</label>
+                        <select class="form-control" id="property_type" name="property_type">
+                            <option value="住宅">住宅</option>
+                            <option value="商铺">商铺</option>
+                            <option value="写字楼">写字楼</option>
+                            <option value="厂房">厂房</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 买方信息 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>买方信息</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="buyer_name">买方姓名</label>
+                        <input type="text" class="form-control" id="buyer_name" name="buyer_name" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="buyer_id_card">买方身份证</label>
+                        <input type="text" class="form-control" id="buyer_id_card" name="buyer_id_card" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="buyer_phone">买方电话</label>
+                        <input type="text" class="form-control" id="buyer_phone" name="buyer_phone" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="buyer_address">买方地址</label>
+                        <input type="text" class="form-control" id="buyer_address" name="buyer_address" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 卖方信息 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>卖方信息</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="seller_name">卖方姓名</label>
+                        <input type="text" class="form-control" id="seller_name" name="seller_name" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="seller_id_card">卖方身份证</label>
+                        <input type="text" class="form-control" id="seller_id_card" name="seller_id_card" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="seller_phone">卖方电话</label>
+                        <input type="text" class="form-control" id="seller_phone" name="seller_phone" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="seller_address">卖方地址</label>
+                        <input type="text" class="form-control" id="seller_address" name="seller_address" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 税费计算 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>税费计算</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="property_price_display">房产价格</label>
+                        <input type="text" class="form-control" id="property_price_display" readonly>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="tax_rate">税率 (%)</label>
+                        <input type="number" class="form-control" id="tax_rate" name="tax_rate" value="1.5" step="0.1" min="0">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="tax_amount">税费金额</label>
+                        <input type="text" class="form-control" id="tax_amount" name="tax_amount" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="total_price">总价 (含税费)</label>
+                    <input type="text" class="form-control" id="total_price" name="total_price" readonly>
+                </div>
+            </div>
+        </div>
+
+        <!-- 生成合同按钮 -->
+        <div class="text-center">
+            <button type="button" class="btn btn-success btn-lg" onclick="generateContract()">生成合同</button>
+        </div>
+    </form>
+</div>
+
+<!-- 合同预览模态框 -->
+<div class="modal fade" id="contractModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">合同预览</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="contractPreview"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="downloadContract()">下载PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script>
+// 税费计算
+document.getElementById('property_price').addEventListener('input', calculateTax);
+document.getElementById('tax_rate').addEventListener('input', calculateTax);
+
+function calculateTax() {
+    const price = parseFloat(document.getElementById('property_price').value) || 0;
+    const rate = parseFloat(document.getElementById('tax_rate').value) || 0;
+
+    const tax = price * (rate / 100);
+    const total = price + tax;
+
+    document.getElementById('property_price_display').value = price.toLocaleString();
+    document.getElementById('tax_amount').value = tax.toLocaleString();
+    document.getElementById('total_price').value = total.toLocaleString();
+}
+
+// 生成合同预览
+// 生成合同预览
+function generateContract() {
+    const formData = new FormData(document.getElementById('contractForm'));
+
+    // 获取中介信息的安全检查
+    let agentName = '房屋中介系统'; // 默认值
+    const navbarBrandElement = document.querySelector('.navbar-brand');
+    if (navbarBrandElement && navbarBrandElement.textContent) {
+        agentName = navbarBrandElement.textContent.trim();
+    }
+
+    // 创建合同内容
+    const contractContent = `
+        <h3 class="text-center mb-4">房屋买卖合同</h3>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <p><strong>合同编号:</strong> HT-${Date.now()}</p>
+                <p><strong>签订日期:</strong> ${new Date().toLocaleDateString()}</p>
+            </div>
+            <div class="col-6">
+                <p><strong>中介:</strong> ${agentName}</p>
+            </div>
+        </div>
+
+        <h5>房产信息</h5>
+        <table class="table table-bordered">
+            <tr><td>房产标题</td><td>${formData.get('property_title')}</td></tr>
+            <tr><td>房产地址</td><td>${formData.get('property_address')}</td></tr>
+            <tr><td>房产价格</td><td>¥${parseFloat(formData.get('property_price')).toLocaleString()}</td></tr>
+            <tr><td>房产面积</td><td>${formData.get('property_area')} 平方米</td></tr>
+            <tr><td>房产类型</td><td>${formData.get('property_type')}</td></tr>
+        </table>
+
+        <h5 class="mt-4">买方信息</h5>
+        <table class="table table-bordered">
+            <tr><td>姓名</td><td>${formData.get('buyer_name')}</td></tr>
+            <tr><td>身份证</td><td>${formData.get('buyer_id_card')}</td></tr>
+            <tr><td>电话</td><td>${formData.get('buyer_phone')}</td></tr>
+            <tr><td>地址</td><td>${formData.get('buyer_address')}</td></tr>
+        </table>
+
+        <h5 class="mt-4">卖方信息</h5>
+        <table class="table table-bordered">
+            <tr><td>姓名</td><td>${formData.get('seller_name')}</td></tr>
+            <tr><td>身份证</td><td>${formData.get('seller_id_card')}</td></tr>
+            <tr><td>电话</td><td>${formData.get('seller_phone')}</td></tr>
+            <tr><td>地址</td><td>${formData.get('seller_address')}</td></tr>
+        </table>
+
+        <h5 class="mt-4">价格信息</h5>
+        <table class="table table-bordered">
+            <tr><td>房产价格</td><td>¥${parseFloat(formData.get('property_price')).toLocaleString()}</td></tr>
+            <tr><td>税率</td><td>${formData.get('tax_rate')}%</td></tr>
+            <tr><td>税费</td><td>¥${parseFloat(document.getElementById('tax_amount').value).toLocaleString()}</td></tr>
+            <tr><td>总价</td><td>¥${parseFloat(document.getElementById('total_price').value).toLocaleString()}</td></tr>
+        </table>
+
+        <div class="mt-4">
+            <p><strong>备注:</strong></p>
+            <p>本合同一式三份，买卖双方及中介各执一份，具有同等法律效力。</p>
+        </div>
+    `;
+
+    document.getElementById('contractPreview').innerHTML = contractContent;
+    $('#contractModal').modal('show');
+}
+
+
+function downloadContract() {
+    // 收集表单数据
+    const formData = {
+      property_title: document.getElementById('property_title').value || '',
+      property_address: document.getElementById('property_address').value || '',
+      property_price: parseFloat(document.getElementById('property_price').value) || 0,
+      property_area: document.getElementById('property_area').value || '',
+      property_type: document.getElementById('property_type').value || '',
+      buyer_name: document.getElementById('buyer_name').value || '',
+      buyer_id_card: document.getElementById('buyer_id_card').value || '',
+      buyer_phone: document.getElementById('buyer_phone').value || '',
+      buyer_address: document.getElementById('buyer_address').value || '',
+      seller_name: document.getElementById('seller_name').value || '',
+      seller_id_card: document.getElementById('seller_id_card').value || '',
+      seller_phone: document.getElementById('seller_phone').value || '',
+      seller_address: document.getElementById('seller_address').value || '',
+      tax_rate: parseFloat(document.getElementById('tax_rate').value) || 0,
+      tax_amount: parseFloat(document.getElementById('tax_amount').value) || 0,
+      total_price: parseFloat(document.getElementById('total_price').value) || 0,
+    };
+
+
+
+    fetch('{% url "users:generate_contract_pdf" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/pdf')) {
+                return response.blob();
+            } else {
+                return response.json().then(data => {
+                    throw new Error(data.error || '服务器返回非PDF内容');
+                });
+            }
+        } else {
+            throw new Error('HTTP错误: ' + response.status);
+        }
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `contract_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        alert('PDF合同已生成并开始下载！');
+        //刷新当前页面已显示更改
+        location.reload();
+
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('生成PDF合同时出错: ' + error.message);
+    });
+}
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ target_user.username }}的个人主页</title>
+</head>
+<body>
+    <h1>{{ target_user.username }}的个人主页</h1>
+    <p>用户ID：{{ target_user.id }}</p>
+    <p>注册时间：{{ target_user.date_joined|date:'Y-m-d H:i:s' }}</p>
+    <!-- 可添加你之前配置的用户描述、发布内容等信息 -->
+</body>
+</html>

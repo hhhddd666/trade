@@ -1,0 +1,97 @@
+<!-- templates/agent_center.html -->
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>中介中心</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+<body>
+<div id="app">
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home:index' %}">房屋中介系统</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- 侧边栏 -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <img src="{% if user.avatar and user.avatar.url %}{{ user.avatar.url }}{% else %}{% static 'img/default_avatar.png' %}{% endif %}"
+                            class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px;">
+                        <h5>{{ user.username }}</h5>
+                        <p class="text-muted">{{ agent_profile.company }}</p>
+                        <p class="text-muted">执照号: {{ agent_profile.license_number }}</p>
+                    </div>
+                </div>
+
+                <div class="list-group mt-3">
+                    <a href="#" class="list-group-item list-group-item-action active">个人资料</a>
+                    <a href="{% url 'users:agent_contracts' %}" class="list-group-item list-group-item-action">合同管理</a>
+                    <a href="{% url 'users:agent_transactions' %}" class="list-group-item list-group-item-action">交易记录</a>
+                    <a href="{% url 'users:agent_property_management' %}" class="list-group-item list-group-item-action">房屋管理</a>
+
+                    <a href="{% url 'users:logout' %}" class="list-group-item list-group-item-action">退出登录</a>
+
+                </div>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>个人资料</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="username">用户名</label>
+                                    <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="mobile">手机号</label>
+                                    <input type="text" class="form-control" id="mobile" name="mobile" value="{{ user.mobile }}" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">个人介绍</label>
+                                <textarea class="form-control" id="description" name="description" rows="3">{{ agent_profile.description }}</textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="company">所属公司</label>
+                                    <input type="text" class="form-control" id="company" name="company" value="{{ agent_profile.company }}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="phone">联系电话</label>
+                                    <input type="text" class="form-control" id="phone" name="phone" value="{{ agent_profile.phone }}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="avatar">头像</label>
+                                <input type="file" class="form-control-file" id="avatar" name="avatar">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">更新资料</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+</body>
+</html>

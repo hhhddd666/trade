@@ -1,0 +1,103 @@
+<!-- templates/admin/agent_management.html -->
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>中介管理</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>房屋中介管理</h2>
+
+    <!-- 创建中介表单 -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>创建房屋中介</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="username">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="mobile">手机号</label>
+                        <input type="text" class="form-control" id="mobile" name="mobile" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="password">密码</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="license_number">执照号</label>
+                        <input type="text" class="form-control" id="license_number" name="license_number" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="company">所属公司</label>
+                        <input type="text" class="form-control" id="company" name="company" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="phone">联系电话</label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">创建中介</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 中介列表 -->
+    <div class="card">
+        <div class="card-header">
+            <h5>中介列表</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>用户名</th>
+                        <th>手机号</th>
+                        <th>公司</th>
+                        <th>执照号</th>
+                        <th>联系电话</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agent in agents %}
+                    <tr>
+                        <td>{{ agent.user.username }}</td>
+                        <td>{{ agent.user.mobile }}</td>
+                        <td>{{ agent.company }}</td>
+                        <td>{{ agent.license_number }}</td>
+                        <td>{{ agent.phone }}</td>
+                        <td>
+                            {% if agent.is_active %}
+                                <span class="badge badge-success">活跃</span>
+                            {% else %}
+                                <span class="badge badge-secondary">非活跃</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'users:agent_detail' agent.id %}" class="btn btn-sm btn-info">详情</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">暂无中介</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

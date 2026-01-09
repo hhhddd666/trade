@@ -1,0 +1,28 @@
+<!-- templates/not_agent.html -->
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>权限不足</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">权限不足</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p class="text-danger">{{ error_message|default:"您不是注册的房屋中介，无法访问此页面" }}</p>
+                    <a href="{% url 'home:index' %}" class="btn btn-primary">返回首页</a>
+                    <a href="{% url 'users:center' %}" class="btn btn-secondary">个人中心</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
